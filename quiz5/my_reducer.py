@@ -42,8 +42,39 @@ def main(argv):
             # count was not a number, so silently
             # ignore/discard this line
             pass
-    print(wcss)
+    # print(wcss)
     tfidf = calculateTFIDF(wcss)  # Implement this function
+
+    # for foo in wcss:
+    keys = list(wcss.items())
+    # print(keys)
+    # print("8=====================D")
+    # print((list(keys[0])))
+    # print((keys[0][1]['chuck']))
+    # bCount = keys[0][1]
+    # print(list(bCount))
+
+    # print((list(keys[0][1])[0]))
+
+    # wordset = list()
+
+    for i in range(len(keys)):
+        termSet = keys[i][1]
+        print(termSet)
+        print("8===============vxcvx======D")
+        for j in range(len(list(termSet))):
+            # print(list(termSet)[j])
+            wordset.append(list(termSet)[j])
+
+    print(wordset)
+
+
+def calculateTF(wordset, bow):
+    termfreq_diz = dict.fromkeys(wordset, 0)
+    counter1 = dict(collections.Counter(bow))
+    for w in bow:
+        termfreq_diz[w] = counter1[w]/len(bow)
+    return termfreq_diz
 
 
 def calculateTFIDF(wcss):
