@@ -80,8 +80,7 @@ def main(argv):
     # print(tf_idf_2)
     tf_idf_3 = calculate_TF_IDF(finalWordSet,tf3,idf_diz)
     # print(tf_idf_3)
-    print([tf_idf_1,tf_idf_2,tf_idf_3
-    ])
+    print([tf_idf_1,tf_idf_2,tf_idf_3])
     # df_tfidf = pd.DataFrame([tf_idf_1,tf_idf_2,tf_idf_3])
     # print(df_tfidf.head())
 
@@ -108,9 +107,10 @@ def calculate_TF_IDF(wordset,tf_diz,idf_diz):
     tf_idf_diz = dict.fromkeys(wordset,0)
     for w in wordset:
         tf_idf_diz[w]=tf_diz[w]*idf_diz[w]
-        tdidf_values = list(tf_idf_diz.values())
-        l2_norm = np.linalg.norm(tdidf_values)   
-        tf_idf_norm = {w:tf_idf_diz[w]/l2_norm for w in wordset}
+    tdidf_values = list(tf_idf_diz.values())
+    l2_norm = np.linalg.norm(tdidf_values)   
+    print()
+    tf_idf_norm = {w:tf_idf_diz[w]/l2_norm for w in wordset}
     return tf_idf_norm
 
 if __name__ == "__main__":
