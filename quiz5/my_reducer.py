@@ -72,15 +72,36 @@ def main(argv):
     tf1 = calculateTF(finalWordSet, aSum, a)
     tf2 = calculateTF(finalWordSet, bSum, b)
     tf3 = calculateTF(finalWordSet, cSum, c)
+    idf_diz = calculate_IDF(finalWordSet, [a, b, c])
 
-    df = pd.DataFrame([tf1, tf2, tf3])
-    # print(df)
-    print(wcss)
-
-    # idf_diz = calculate_IDF(
-    #     finalWordSet, [['piper', 'pick'], ['sells', 'seashells']])
+    # df_tf = pd.DataFrame([tf1, tf2, tf3])
     # df_idf = pd.DataFrame([idf_diz])
-    # df_idf
+    # print(df_idf)
+    # print(df_tf)
+
+
+def calculate_IDF(wordset, bow):
+    d_bow = {'bow_{}'.format(i): list(set(b)) for i, b in enumerate(bow)}
+    # print('*******', d_bow)
+    # {'bow_0': ['seashore', 'shells', 'seashells', 'surely', 'sells'], 'bow_1': ['woodchuck', 'wood', 'chuck'], 'bow_2': ['peck', 'peter', 'picked', 'peppers', 'pick', 'piper', 'pickled']}
+    # d_bow is a object with bow0, bow1, bow2 as keys and each set as an array for values
+    N = len(d_bow.keys())
+    # N = 3
+
+    l_bow = []
+    for b in d_bow.values():
+        l_bow += b
+    # print(l_bow, '+++++++++++++++++++++')
+    # ['shells', 'seashells', 'sells', 'seashore', 'surely', 'woodchuck', 'wood', 'chuck', 'pick', 'peter', 'peppers', 'peck', 'picked', 'pickled', 'piper']
+    counter = dict(collections.Counter(l_bow))
+    # print('COUNTER', counter)
+    # COUNTER {'shells': 1, 'seashells': 1, 'sells': 1, 'seashore': 1, 'surely': 1, 'woodchuck': 1, 'wood': 1, 'chuck': 1, 'pick': 1, 'peter': 1, 'peppers': 1, 'peck': 1, 'picked': 1, 'pickled': 1, 'piper': 1}
+    idf_diz = dict.fromkeys(wordset, 0)
+    # print(idf_diz)
+    # {'seashells': 0, 'seashore': 0, 'sells': 0, 'shells': 0, 'surely': 0, 'chuck': 0, 'wood': 0, 'woodchuck': 0, 'peck': 0, 'peppers': 0, 'peter': 0, 'pick': 0, 'picked': 0, 'pickled': 0, 'piper': 0}
+    for w in wordset:
+        idf_diz[w] = np.log((1+N)/(1+counter[w]))+1
+    return idf_diz
 
 
 def calculateTF(wordset, sum, subset):
@@ -88,21 +109,6 @@ def calculateTF(wordset, sum, subset):
     for w in subset:
         termfreq_diz[w] = subset[w]/sum
     return termfreq_diz
-
-
-# def calculate_IDF(wordset, bow):
-#     d_bow = {'bow_{}'.format(i): list(set(b)) for i, b in enumerate(bow)}
-#     print('*******', d_bow)
-#     N = len(d_bow.keys())
-#     l_bow = []
-#     for b in d_bow.values():
-#         l_bow += b
-#     print(l_bow)
-#     counter = dict(collections.Counter(l_bow))
-#     idf_diz = dict.fromkeys(wordset, 0)
-#     for w in wordset:
-#         idf_diz[w] = np.log((1+N)/(1+counter[w]))+1
-#     return idf_diz
 
 
 def calculateTFIDF(wcss):
