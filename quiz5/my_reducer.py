@@ -6,9 +6,13 @@
 
 import collections
 from operator import itemgetter
+from re import A, sub
 import sys
 import numpy as np
+import pandas as pd
 import pprint
+import collections
+
 pp = pprint.PrettyPrinter(indent=4, width=80)
 
 # https://docs.google.com/document/d/17Fmco0wZGRnaPlRFm5QOLw-9J4PAf3saGGk8_fMoe7s/edit
@@ -42,39 +46,63 @@ def main(argv):
             # count was not a number, so silently
             # ignore/discard this line
             pass
-    # print(wcss)
-    tfidf = calculateTFIDF(wcss)  # Implement this function
 
-    # for foo in wcss:
-    keys = list(wcss.items())
-    # print(keys)
-    # print("8=====================D")
-    # print((list(keys[0])))
-    # print((keys[0][1]['chuck']))
-    # bCount = keys[0][1]
-    # print(list(bCount))
+    # tfidf = calculateTFIDF(wcss)  # Implement this function
 
-    # print((list(keys[0][1])[0]))
+    a = wcss['a']
+    b = wcss['b']
+    c = wcss['c']
+    finalWordSet = list()
+    aSum = 0
+    bSum = 0
+    cSum = 0
 
-    # wordset = list()
+    for key in a:
+        finalWordSet.append(key)
+        aSum = aSum + a[key]
+    for key in b:
+        finalWordSet.append(key)
+        bSum = bSum + b[key]
+    for key in c:
+        finalWordSet.append(key)
+        cSum = cSum + c[key]
 
-    for i in range(len(keys)):
-        termSet = keys[i][1]
-        print(termSet)
-        print("8===============vxcvx======D")
-        for j in range(len(list(termSet))):
-            # print(list(termSet)[j])
-            wordset.append(list(termSet)[j])
+    print('-------')
 
-    print(wordset)
+    tf1 = calculateTF(finalWordSet, aSum, a)
+    tf2 = calculateTF(finalWordSet, bSum, b)
+    tf3 = calculateTF(finalWordSet, cSum, c)
+
+    df = pd.DataFrame([tf1, tf2, tf3])
+    # print(df)
+    print(wcss)
+
+    # idf_diz = calculate_IDF(
+    #     finalWordSet, [['piper', 'pick'], ['sells', 'seashells']])
+    # df_idf = pd.DataFrame([idf_diz])
+    # df_idf
 
 
-def calculateTF(wordset, bow):
+def calculateTF(wordset, sum, subset):
     termfreq_diz = dict.fromkeys(wordset, 0)
-    counter1 = dict(collections.Counter(bow))
-    for w in bow:
-        termfreq_diz[w] = counter1[w]/len(bow)
+    for w in subset:
+        termfreq_diz[w] = subset[w]/sum
     return termfreq_diz
+
+
+# def calculate_IDF(wordset, bow):
+#     d_bow = {'bow_{}'.format(i): list(set(b)) for i, b in enumerate(bow)}
+#     print('*******', d_bow)
+#     N = len(d_bow.keys())
+#     l_bow = []
+#     for b in d_bow.values():
+#         l_bow += b
+#     print(l_bow)
+#     counter = dict(collections.Counter(l_bow))
+#     idf_diz = dict.fromkeys(wordset, 0)
+#     for w in wordset:
+#         idf_diz[w] = np.log((1+N)/(1+counter[w]))+1
+#     return idf_diz
 
 
 def calculateTFIDF(wcss):
@@ -99,3 +127,28 @@ def calculateTFIDF(wcss):
 
 if __name__ == "__main__":
     main(sys.argv)
+
+    # print(a)
+    # print(collections.Counter(b).values())
+    # print(b)
+    # print(collections.Counter(c).values())
+    # print(c)
+    # print("8=====================D")
+    # print((list(keys[0])))
+    # print((keys[0][1]['chuck']))
+    # bCount = keys[0][1]
+    # print(list(bCount))
+
+    # print((list(keys[0][1])[0]))
+
+    # wordset = list()
+
+    # for i in range(len(keys)):
+    #     termSet = keys[i][1]
+    #     print(termSet)
+    #     print("8===============vxcvx======D")
+    #     for j in range(len(list(termSet))):
+    #         # print(list(termSet)[j])
+    #         wordset.append(list(termSet)[j])
+
+    # print(wordset)
