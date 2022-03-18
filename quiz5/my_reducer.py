@@ -11,7 +11,6 @@ from operator import itemgetter
 from re import A, sub
 import sys
 import numpy as np
-import pandas as pd
 import pprint
 import collections
 
