@@ -13,6 +13,7 @@ import sys
 import numpy as np
 import pprint
 import collections
+# import pandas as pd
 
 pp = pprint.PrettyPrinter(indent=4, width=80)
 
@@ -46,42 +47,14 @@ def main(argv):
             # ignore/discard this line
             pass
 
-    # tfidf = calculateTFIDF(wcss)  # Implement this function
-
-    a = wcss['a']
-    b = wcss['b']
-    c = wcss['c']
-    finalWordSet = list()
-    aSum = 0
-    bSum = 0
-    cSum = 0
-
-    for key in a:
-        finalWordSet.append(key)
-        aSum = aSum + a[key]
-    for key in b:
-        finalWordSet.append(key)
-        bSum = bSum + b[key]
-    for key in c:
-        finalWordSet.append(key)
-        cSum = cSum + c[key]
-
-    print('-------')
-
-    tf1 = calculateTF(finalWordSet, aSum, a)
-    tf2 = calculateTF(finalWordSet, bSum, b)
-    tf3 = calculateTF(finalWordSet, cSum, c)
-    idf_diz = calculate_IDF(finalWordSet, [a, b, c])
-
-    tf_idf_1 = calculate_TF_IDF(finalWordSet,tf1,idf_diz)
-    # print(tf_idf_1)
-    tf_idf_2 = calculate_TF_IDF(finalWordSet,tf2,idf_diz)
-    # print(tf_idf_2)
-    tf_idf_3 = calculate_TF_IDF(finalWordSet,tf3,idf_diz)
-    # print(tf_idf_3)
-    print([tf_idf_1,tf_idf_2,tf_idf_3])
-    # df_tfidf = pd.DataFrame([tf_idf_1,tf_idf_2,tf_idf_3])
+    tfidf = calculate_TF_IDF(wcss)  # Implement this function
+    print(tfidf)
+    return None
+    
+    # df_tfidf = pd.DataFrame(tfidf)
     # print(df_tfidf.head())
+
+    
 
 
 def calculate_IDF(wordset, bow):
@@ -102,15 +75,51 @@ def calculateTF(wordset, sum, subset):
         termfreq_diz[w] = subset[w]/sum
     return termfreq_diz
 
-def calculate_TF_IDF(wordset,tf_diz,idf_diz):
-    tf_idf_diz = dict.fromkeys(wordset,0)
-    for w in wordset:
-        tf_idf_diz[w]=tf_diz[w]*idf_diz[w]
-    tdidf_values = list(tf_idf_diz.values())
-    l2_norm = np.linalg.norm(tdidf_values)   
-    print()
-    tf_idf_norm = {w:tf_idf_diz[w]/l2_norm for w in wordset}
-    return tf_idf_norm
+def calculate_TF_IDF(wcss):
+    #wordset,tf_diz,idf_diz
+    a = wcss['a']
+    b = wcss['b']
+    c = wcss['c']
+    finalWordSet = list()
+    aSum = 0
+    bSum = 0
+    cSum = 0
+    for key in a:
+        finalWordSet.append(key)
+        aSum = aSum + a[key]
+    for key in b:
+        finalWordSet.append(key)
+        bSum = bSum + b[key]
+    for key in c:
+        finalWordSet.append(key)
+        cSum = cSum + c[key]
+
+    tf1 = calculateTF(finalWordSet, aSum, a)
+    tf2 = calculateTF(finalWordSet, bSum, b)
+    tf3 = calculateTF(finalWordSet, cSum, c)
+    idf_diz = calculate_IDF(finalWordSet, [a, b, c])
+    tfArr = [tf1, tf2, tf3]
+    tf_idf_arr = []
+
+    for i in range(len(tfArr)):
+        tf_idf_diz = dict.fromkeys(finalWordSet,0)
+        for w in finalWordSet:
+            tf_idf_diz[w]=tfArr[i][w]*idf_diz[w]
+        tdidf_values = list(tf_idf_diz.values())
+        l2_norm = np.linalg.norm(tdidf_values)   
+        tf_idf_norm = {w:tf_idf_diz[w]/l2_norm for w in finalWordSet}
+        tf_idf_arr.append(tf_idf_norm)
+    return tf_idf_arr
+
+    # tf_idf_1 = calculate_TF_IDF(finalWordSet,tf1,idf_diz)
+    # # print(tf_idf_1)
+    # tf_idf_2 = calculate_TF_IDF(finalWordSet,tf2,idf_diz)
+    # # print(tf_idf_2)
+    # tf_idf_3 = calculate_TF_IDF(finalWordSet,tf3,idf_diz)
+    # # print(tf_idf_3)
+    # print([tf_idf_1,tf_idf_2,tf_idf_3])
+    # # df_tfidf = pd.DataFrame([tf_idf_1,tf_idf_2,tf_idf_3])
+    # # print(df_tfidf.head())
 
 if __name__ == "__main__":
     main(sys.argv)
